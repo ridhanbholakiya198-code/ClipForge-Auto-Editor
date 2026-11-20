@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <cache-path name="rendered_cache" path="/" />
+    <external-path name="movies_clipforge" path="Movies/ClipForge/" />
+</paths>

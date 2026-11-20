@@ -1,0 +1,34 @@
+workflows:
+  clipforge-android-debug:
+    name: ClipForge Debug APK (Free Tier)
+    # FREE PLAN: personal Codemagic accounts get 500 free minutes/month on mac_mini_m2 only.
+    # Linux/Windows/M4 instances are NOT free, so do not change instance_type.
+    instance_type: mac_mini_m2
+    max_build_duration: 30   # hard stop so a stuck build cannot burn the free minutes
+    environment:
+      java: 17
+    cache:
+      cache_paths:
+        - $HOME/.gradle/caches
+        - $HOME/.gradle/wrapper
+    scripts:
+      - name: Point Gradle at the Android SDK
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
+      - name: Download Gradle 8.14.3 (repo has no wrapper jar)
+        script: |
+          curl -fsSL -o /tmp/gradle.zip https://services.gradle.org/distributions/gradle-8.14.3-bin.zip
+          unzip -q /tmp/gradle.zip -d /tmp
+          /tmp/gradle-8.14.3/bin/gradle --version
+      - name: Build Debug APK
+        script: |
+          /tmp/gradle-8.14.3/bin/gradle assembleDebug --no-daemon --stacktrace
+    artifacts:
+      - app/build/outputs/apk/debug/*.apk
+    publishing:
+      email:
+        recipients:
+          - ridhanbholakiya198@gmail.com
+        notify:
+          success: true
+          failure: true
